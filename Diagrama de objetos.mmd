@@ -1,0 +1,9 @@
+flowchart LR
+  SocioObj[Socio]
+  TarjetaObj[Tarjeta\nSaldo: float]
+  HistorialObj[HistorialAlquiler]
+  ItemObj["Película/Videojuego\nDisponibilidad: bool"]
+
+  SocioObj --> TarjetaObj
+  SocioObj --> HistorialObj
+  HistorialObj --> ItemObj
