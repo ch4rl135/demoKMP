@@ -1,0 +1,19 @@
+flowchart LR
+  subgraph Frontend
+    FE[React App]
+  end
+  subgraph Backend
+    API[API REST\nDjango]
+    SI[Servicios Internos]
+    US[Usuarios]
+    CT[Catálogo]
+    AL[Alquileres]
+  end
+  DB[(PostgreSQL DB)]
+
+  FE --> API
+  API --> SI
+  SI --> US
+  SI --> CT
+  SI --> AL
+  SI --> DB
