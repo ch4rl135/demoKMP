@@ -1,13 +1,12 @@
-%% Caso de Uso: Registro de Socios
-%% -------------------------------
-%% Actor y casos
-actor Socio
+flowchart LR
+  FE_ALQ[Frontend Alquiler]
+  ALQ_CTRL[AlquilerController]
+  ALQ_SVC[ServicioAlquiler]
+  ITEM_REPO[ItemRepository]
+  SALDO_SVC[SaldoService]
+  DB_CAT[(DB Catálogo)]
+  DB_USR[(DB Usuarios)]
 
-Socio --> (Alta de Socio en Sede)
-Socio --> (Recarga de Saldo)
-
-%% Agrupación del caso “Registro de Socios”
-rectangle "Registro de Socios" {
-  (Alta de Socio en Sede)
-  (Recarga de Saldo)
-}
+  FE_ALQ --> ALQ_CTRL --> ALQ_SVC
+  ALQ_SVC --> ITEM_REPO --> DB_CAT
+  ALQ_SVC --> SALDO_SVC --> DB_USR
