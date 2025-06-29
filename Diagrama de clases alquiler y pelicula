@@ -1,0 +1,14 @@
+classDiagram
+  class Alquiler {
+    +id
+    +fecha
+    +monto
+  }
+  class Pelicula {
+    +idPelicula
+    +titulo
+    +disponibilidad: bool
+  }
+  class Socio
+  Alquiler --> Socio
+  Alquiler --> Pelicula
