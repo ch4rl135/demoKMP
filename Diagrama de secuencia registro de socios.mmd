@@ -1,0 +1,11 @@
+sequenceDiagram
+  participant Socio
+  participant Sistema
+  participant DB
+
+  Socio->>Sistema: Inicia registro
+  Sistema->>DB: Guarda datos
+  Sistema--)Sistema: Genera tarjeta
+  Sistema->>Socio: Notifica recogida
+  Socio->>Sistema: Cambia clave
+  Sistema->>DB: Actualiza clave
