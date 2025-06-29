@@ -1,0 +1,6 @@
+actor Socio
+actor "Máquina Automática" as MA
+Socio --> (Alquilar Películas/Videojuegos)
+MA     --> (Alquilar Películas/Videojuegos)
+(Alquilar Películas/Videojuegos) --> (Verificar saldo y disponibilidad)
+(Alquilar Películas/Videojuegos) --> (Generar Ticket)
