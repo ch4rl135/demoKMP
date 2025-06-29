@@ -1,0 +1,10 @@
+sequenceDiagram
+  participant Socio
+  participant Sistema
+  participant DB
+
+  Socio->>Sistema: Selecciona ítems
+  Sistema->>DB: Verifica disponibilidad y saldo
+  Sistema--)Sistema: Genera ticket
+  Sistema->>Socio: Muestra ticket
+  Sistema->>DB: Actualiza alquiler y saldo
