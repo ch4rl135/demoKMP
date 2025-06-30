@@ -1,13 +1,43 @@
 graph TB
-  %% Actor como caja
-  ActorSocio[Socio]
+    %% Actores
+    SOCIO[👤 Socio]
+    EMPLEADO[👨‍💼 Empleado de Sede]
+    ADMIN[👨‍💻 Administrador]
+    KIOSK[🏧 Máquina Automática]
 
-  %% Agrupación de casos en subgrafo
-  subgraph "Registro de Socios"
-    U1((Alta de Socio en Sede))
-    U2((Recarga de Saldo))
-  end
+    %% Agrupación de casos de uso
+    subgraph "Sistema de Gestión de Socios"
+        %% Casos de uso principales
+        UC1((Registrar Socio))
+        UC2((Recargar Saldo))
+        UC3((Consultar Saldo))
+        UC4((Actualizar Datos))
+        UC5((Generar Tarjeta))
+        UC6((Cambiar PIN))
+        
+        %% Casos de uso administrativos
+        UC7((Consultar Historial))
+        UC8((Gestionar Penalizaciones))
+        UC9((Generar Reportes))
+    end
 
-  %% Relaciones
-  ActorSocio --> U1
-  ActorSocio --> U2
+    %% Relaciones principales
+    SOCIO --> UC2
+    SOCIO --> UC3
+    SOCIO --> UC4
+    SOCIO --> UC6
+    
+    EMPLEADO --> UC1
+    EMPLEADO --> UC2
+    EMPLEADO --> UC5
+    EMPLEADO --> UC7
+    
+    ADMIN --> UC8
+    ADMIN --> UC9
+    
+    KIOSK --> UC2
+    KIOSK --> UC3
+    
+    %% Relaciones include/extend
+    UC1 -.->|include| UC5
+    UC1 -.->|include| UC6
