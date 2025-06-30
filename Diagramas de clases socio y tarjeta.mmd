@@ -1,13 +1,140 @@
 classDiagram
-  class Socio {
-    +id
-    +nombre
-    +clave
-    +saldo
-  }
-  class Tarjeta {
-    +idTarjeta
-    +fechaGeneracion
-    +claveInicial
-  }
-  Socio --> Tarjeta
+    class Usuario {
+        +Long id
+        +String nombre
+        +String email
+        +String telefono
+        +DateTime fechaRegistro
+        +Boolean activo
+        +validarDatos() Boolean
+        +actualizarPerfil() void
+    }
+    
+    class Socio {
+        +String numeroSocio
+        +Double saldo
+        +String pin
+        +DateTime fechaVencimiento
+        +consultarSaldo() Double
+        +recargarSaldo(monto: Double) void
+        +cambiarPin(nuevoPin: String) Boolean
+    }
+    
+    class Tarjeta {
+        +String numeroTarjeta
+        +DateTime fechaEmision
+        +DateTime fechaVencimiento
+        +String pinInicial
+        +Boolean activa
+        +activar() void
+        +desactivar() void
+    }
+    
+    class Alquiler {
+        +Long id
+        +DateTime fechaAlquiler
+        +DateTime fechaDevolucion
+        +Double montoTotal
+        +EstadoAlquiler estado
+        +calcularMonto() Double
+        +procesar() void
+        +devolver() void
+    }
+    
+    class DetalleAlquiler {
+        +Long id
+        +Integer cantidad
+        +Double precioUnitario
+        +Double subtotal
+        +calcularSubtotal() Double
+    }
+    
+    class Contenido {
+        <<abstract>>
+        +Long id
+        +String titulo
+        +String genero
+        +Integer anioLanzamiento
+        +Boolean disponible
+        +Double precioAlquiler
+        +verificarDisponibilidad() Boolean
+    }
+    
+    class Pelicula {
+        +String director
+        +Integer duracion
+        +String clasificacion
+        +FormatoPelicula formato
+    }
+    
+    class Videojuego {
+        +String plataforma
+        +String desarrollador
+        +String clasificacionESRB
+        +TipoVideojuego tipo
+    }
+    
+    class Inventario {
+        +Long id
+        +Integer stockTotal
+        +Integer stockDisponible
+        +Integer stockAlquilado
+        +actualizarStock() void
+        +verificarDisponibilidad() Boolean
+    }
+    
+    class Pago {
+        +Long id
+        +Double monto
+        +DateTime fechaPago
+        +TipoPago tipo
+        +String numeroTransaccion
+        +procesar() Boolean
+    }
+    
+    class Penalizacion {
+        +Long id
+        +TipoPenalizacion tipo
+        +Double monto
+        +String descripcion
+        +DateTime fechaAplicacion
+        +Boolean pagada
+        +aplicar() void
+    }
+
+    %% Relaciones
+    Usuario <|-- Socio
+    Socio ||--|| Tarjeta
+    Socio ||--o{ Alquiler
+    Socio ||--o{ Penalizacion
+    
+    Alquiler ||--o{ DetalleAlquiler
+    Alquiler ||--|| Pago
+    
+    DetalleAlquiler }o--|| Contenido
+    Contenido <|-- Pelicula
+    Contenido <|-- Videojuego
+    Contenido ||--|| Inventario
+    
+    %% Enumeraciones
+    class EstadoAlquiler {
+        <<enumeration>>
+        ACTIVO
+        DEVUELTO
+        VENCIDO
+        CANCELADO
+    }
+    
+    class TipoPago {
+        <<enumeration>>
+        SALDO_TARJETA
+        EFECTIVO
+        TARJETA_CREDITO
+    }
+    
+    class TipoPenalizacion {
+        <<enumeration>>
+        DEVOLUCION_TARDIA
+        CONTENIDO_DANADO
+        PERDIDA_CONTENIDO
+    }
