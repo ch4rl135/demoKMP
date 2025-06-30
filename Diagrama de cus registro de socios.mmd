@@ -1,8 +1,13 @@
 graph TB
-  ActorSocio["  o\n /|\\\n / \\\nSocio"]
+  %% Actor como caja
+  ActorSocio[Socio]
+
+  %% Agrupación de casos en subgrafo
   subgraph "Registro de Socios"
     U1((Alta de Socio en Sede))
     U2((Recarga de Saldo))
   end
+
+  %% Relaciones
   ActorSocio --> U1
   ActorSocio --> U2
