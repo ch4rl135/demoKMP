@@ -1,0 +1,13 @@
+flowchart TB
+  Internet([Internet])
+  LB[Load Balancer]
+  APIGW[API Gateway]
+  subgraph "Cluster de Microservicios"
+    MS1[Usuarios]
+    MS2[Alquiler]
+    MS3[Pagos]
+  end
+  DB[(Base de Datos)]
+
+  Internet --> LB --> APIGW --> Cluster
+  Cluster --> DB
