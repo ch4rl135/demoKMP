@@ -1,13 +1,83 @@
 flowchart TB
-  Internet([Internet])
-  LB[Load Balancer]
-  APIGW[API Gateway]
-  subgraph "Cluster de Microservicios"
-    MS1[Usuarios]
-    MS2[Alquiler]
-    MS3[Pagos]
-  end
-  DB[(Base de Datos)]
-
-  Internet --> LB --> APIGW --> Cluster
-  Cluster --> DB
+    subgraph "Internet"
+        USERS[👥 Usuarios]
+        KIOSKS[🏧 Máquinas Automáticas]
+    end
+    
+    subgraph "DMZ Zone"
+        LB[Load Balancer<br/>NGINX]
+        WAF[Web Application Firewall]
+    end
+    
+    subgraph "Application Zone"
+        subgraph "Frontend Cluster"
+            WEB1[Web Server 1<br/>React App]
+            WEB2[Web Server 2<br/>React App]
+        end
+        
+        subgraph "API Cluster"
+            API1[API Server 1<br/>Node.js/Express]
+            API2[API Server 2<br/>Node.js/Express]
+            API3[API Server 3<br/>Node.js/Express]
+        end
+    end
+    
+    subgraph "Database Zone"
+        subgraph "Primary DB Cluster"
+            DB_MASTER[(PostgreSQL Master)]
+            DB_SLAVE1[(PostgreSQL Slave 1)]
+            DB_SLAVE2[(PostgreSQL Slave 2)]
+        end
+        
+        REDIS_CLUSTER[Redis Cluster<br/>Cache & Sessions]
+    end
+    
+    subgraph "Storage Zone"
+        NAS[Network Attached Storage<br/>Media Files & Backups]
+    end
+    
+    subgraph "Monitoring & Logging"
+        MONITOR[Monitoring Server<br/>Prometheus + Grafana]
+        LOGS[Log Server<br/>ELK Stack]
+    end
+    
+    %% Network connections
+    USERS --> WAF
+    KIOSKS --> WAF
+    WAF --> LB
+    
+    LB --> WEB1
+    LB --> WEB2
+    
+    WEB1 --> API1
+    WEB1 --> API2
+    WEB2 --> API2
+    WEB2 --> API3
+    
+    API1 --> DB_MASTER
+    API2 --> DB_SLAVE1
+    API3 --> DB_SLAVE2
+    
+    API1 --> REDIS_CLUSTER
+    API2 --> REDIS_CLUSTER
+    API3 --> REDIS_CLUSTER
+    
+    DB_MASTER -.-> DB_SLAVE1
+    DB_MASTER -.-> DB_SLAVE2
+    
+    API1 --> NAS
+    API2 --> NAS
+    API3 --> NAS
+    
+    %% Monitoring connections
+    MONITOR -.-> LB
+    MONITOR -.-> API1
+    MONITOR -.-> API2
+    MONITOR -.-> API3
+    MONITOR -.-> DB_MASTER
+    
+    LOGS -.-> WEB1
+    LOGS -.-> WEB2
+    LOGS -.-> API1
+    LOGS -.-> API2
+    LOGS -.-> API3
