@@ -1,19 +1,46 @@
-flowchart LR
-  subgraph Frontend
-    FE[React App]
-  end
-  subgraph Backend
-    API[API REST\nDjango]
-    SI[Servicios Internos]
-    US[Usuarios]
-    CT[Catálogo]
-    AL[Alquileres]
-  end
-  DB[(PostgreSQL DB)]
-
-  FE --> API
-  API --> SI
-  SI --> US
-  SI --> CT
-  SI --> AL
-  SI --> DB
+flowchart TB
+    subgraph "Capa de Presentación"
+        WEB[Aplicación Web React]
+        MOBILE[App Móvil]
+        KIOSK[Máquina Automática]
+    end
+    
+    subgraph "Capa de Lógica de Negocio"
+        API[API Gateway]
+        subgraph "Microservicios"
+            AUTH[Servicio Autenticación]
+            USER[Servicio Usuarios]
+            CATALOG[Servicio Catálogo]
+            RENTAL[Servicio Alquileres]
+            PAYMENT[Servicio Pagos]
+            REPORT[Servicio Reportes]
+        end
+    end
+    
+    subgraph "Capa de Datos"
+        DB[(Base de Datos Principal)]
+        CACHE[(Redis Cache)]
+        FILES[(Almacén de Archivos)]
+    end
+    
+    WEB --> API
+    MOBILE --> API
+    KIOSK --> API
+    
+    API --> AUTH
+    API --> USER
+    API --> CATALOG
+    API --> RENTAL
+    API --> PAYMENT
+    API --> REPORT
+    
+    AUTH --> DB
+    USER --> DB
+    CATALOG --> DB
+    RENTAL --> DB
+    PAYMENT --> DB
+    REPORT --> DB
+    
+    CATALOG --> CACHE
+    USER --> CACHE
+    REPORT --> FILES
