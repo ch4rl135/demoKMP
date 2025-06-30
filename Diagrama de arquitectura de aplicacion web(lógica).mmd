@@ -1,46 +1,93 @@
 flowchart TB
-    subgraph "Capa de Presentación"
-        WEB[Aplicación Web React]
-        MOBILE[App Móvil]
-        KIOSK[Máquina Automática]
+    subgraph "Frontend Layer"
+        WEB[React Web App]
+        MOBILE[Mobile App React Native]
+        KIOSK[Kiosk Interface]
     end
     
-    subgraph "Capa de Lógica de Negocio"
-        API[API Gateway]
-        subgraph "Microservicios"
-            AUTH[Servicio Autenticación]
-            USER[Servicio Usuarios]
-            CATALOG[Servicio Catálogo]
-            RENTAL[Servicio Alquileres]
-            PAYMENT[Servicio Pagos]
-            REPORT[Servicio Reportes]
+    subgraph "API Gateway Layer"
+        GATEWAY[API Gateway<br/>- Routing<br/>- Authentication<br/>- Rate Limiting]
+    end
+    
+    subgraph "Microservices Layer"
+        subgraph "User Management"
+            USER_SVC[User Service<br/>- Registration<br/>- Authentication<br/>- Profile Management]
+            AUTH_SVC[Auth Service<br/>- JWT Tokens<br/>- Session Management]
+        end
+        
+        subgraph "Content Management"
+            CATALOG_SVC[Catalog Service<br/>- Movie/Game Listing<br/>- Search & Filter<br/>- Availability Check]
+            INVENTORY_SVC[Inventory Service<br/>- Stock Management<br/>- Availability Updates]
+        end
+        
+        subgraph "Business Logic"
+            RENTAL_SVC[Rental Service<br/>- Rental Processing<br/>- Return Management<br/>- Business Rules]
+            PAYMENT_SVC[Payment Service<br/>- Balance Management<br/>- Transaction Processing]
+            PENALTY_SVC[Penalty Service<br/>- Late Return Fees<br/>- Damage Charges]
+        end
+        
+        subgraph "Support Services"
+            NOTIFICATION_SVC[Notification Service<br/>- Email/SMS<br/>- Push Notifications]
+            REPORT_SVC[Report Service<br/>- Analytics<br/>- Business Intelligence]
+            FILE_SVC[File Service<br/>- Media Storage<br/>- Document Management]
         end
     end
     
-    subgraph "Capa de Datos"
-        DB[(Base de Datos Principal)]
-        CACHE[(Redis Cache)]
-        FILES[(Almacén de Archivos)]
+    subgraph "Data Layer"
+        subgraph "Databases"
+            USER_DB[(Users DB<br/>PostgreSQL)]
+            CATALOG_DB[(Catalog DB<br/>PostgreSQL)]
+            RENTAL_DB[(Rentals DB<br/>PostgreSQL)]
+            ANALYTICS_DB[(Analytics DB<br/>ClickHouse)]
+        end
+        
+        subgraph "Cache & Storage"
+            REDIS[(Redis Cache)]
+            S3[(File Storage<br/>AWS S3)]
+        end
     end
     
-    WEB --> API
-    MOBILE --> API
-    KIOSK --> API
+    subgraph "External Services"
+        PAYMENT_GW[Payment Gateway]
+        EMAIL_SVC[Email Service]
+        SMS_SVC[SMS Service]
+    end
     
-    API --> AUTH
-    API --> USER
-    API --> CATALOG
-    API --> RENTAL
-    API --> PAYMENT
-    API --> REPORT
+    %% Frontend connections
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    KIOSK --> GATEWAY
     
-    AUTH --> DB
-    USER --> DB
-    CATALOG --> DB
-    RENTAL --> DB
-    PAYMENT --> DB
-    REPORT --> DB
+    %% API Gateway connections
+    GATEWAY --> USER_SVC
+    GATEWAY --> AUTH_SVC
+    GATEWAY --> CATALOG_SVC
+    GATEWAY --> RENTAL_SVC
     
-    CATALOG --> CACHE
-    USER --> CACHE
-    REPORT --> FILES
+    %% Service interconnections
+    USER_SVC --> AUTH_SVC
+    RENTAL_SVC --> CATALOG_SVC
+    RENTAL_SVC --> PAYMENT_SVC
+    RENTAL_SVC --> PENALTY_SVC
+    RENTAL_SVC --> INVENTORY_SVC
+    
+    %% Database connections
+    USER_SVC --> USER_DB
+    AUTH_SVC --> USER_DB
+    CATALOG_SVC --> CATALOG_DB
+    INVENTORY_SVC --> CATALOG_DB
+    RENTAL_SVC --> RENTAL_DB
+    PAYMENT_SVC --> RENTAL_DB
+    PENALTY_SVC --> RENTAL_DB
+    REPORT_SVC --> ANALYTICS_DB
+    
+    %% Cache connections
+    USER_SVC --> REDIS
+    CATALOG_SVC --> REDIS
+    AUTH_SVC --> REDIS
+    
+    %% External service connections
+    PAYMENT_SVC --> PAYMENT_GW
+    NOTIFICATION_SVC --> EMAIL_SVC
+    NOTIFICATION_SVC --> SMS_SVC
+    FILE_SVC --> S3
