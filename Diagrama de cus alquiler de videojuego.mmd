@@ -1,17 +1,50 @@
 graph TB
-  %% Actores
-  ActorSocio[Socio]
-  ActorMA[Máquina Automática]
+    %% Actores
+    SOCIO[👤 Socio]
+    KIOSK[🏧 Máquina Automática]
+    EMPLEADO[👨‍💼 Empleado]
+    SISTEMA[🖥️ Sistema]
 
-  %% Agrupación de casos
-  subgraph "Alquiler de Películas/Videojuegos"
-    U3((Alquilar Películas/Videojuegos))
-    U4((Verificar saldo y disponibilidad))
-    U5((Generar Ticket))
-  end
+    %% Agrupación de casos de uso
+    subgraph "Sistema de Alquiler"
+        %% Casos principales
+        UC10((Consultar Catálogo))
+        UC11((Alquilar Película))
+        UC12((Alquilar Videojuego))
+        UC13((Devolver Contenido))
+        UC14((Verificar Disponibilidad))
+        UC15((Procesar Pago))
+        UC16((Generar Ticket))
+        UC17((Aplicar Descuentos))
+        
+        %% Casos administrativos
+        UC18((Gestionar Inventario))
+        UC19((Controlar Devoluciones))
+        UC20((Calcular Penalizaciones))
+    end
 
-  %% Relaciones
-  ActorSocio --> U3
-  ActorMA     --> U3
-  U3 --> U4
-  U3 --> U5
+    %% Relaciones principales
+    SOCIO --> UC10
+    SOCIO --> UC11
+    SOCIO --> UC12
+    SOCIO --> UC13
+    
+    KIOSK --> UC10
+    KIOSK --> UC11
+    KIOSK --> UC12
+    
+    EMPLEADO --> UC18
+    EMPLEADO --> UC19
+    EMPLEADO --> UC20
+    
+    %% Relaciones include/extend
+    UC11 -.->|include| UC14
+    UC11 -.->|include| UC15
+    UC11 -.->|include| UC16
+    
+    UC12 -.->|include| UC14
+    UC12 -.->|include| UC15
+    UC12 -.->|include| UC16
+    
+    UC15 -.->|extend| UC17
+    UC13 -.->|extend| UC20
