@@ -1,0 +1,17 @@
+graph TB
+  %% Actores
+  ActorSocio[Socio]
+  ActorMA[Máquina Automática]
+
+  %% Agrupación de casos
+  subgraph "Alquiler de Películas/Videojuegos"
+    U3((Alquilar Películas/Videojuegos))
+    U4((Verificar saldo y disponibilidad))
+    U5((Generar Ticket))
+  end
+
+  %% Relaciones
+  ActorSocio --> U3
+  ActorMA     --> U3
+  U3 --> U4
+  U3 --> U5
