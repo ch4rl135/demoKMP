@@ -1,10 +1,61 @@
 sequenceDiagram
-  participant Socio
-  participant Sistema
-  participant DB
+    participant S as Socio
+    participant K as Kiosko/App
+    participant API as API Gateway
+    participant US as UserService
+    participant CS as CatalogService
+    participant RS as RentalService
+    participant PS as PaymentService
+    participant DB as Base de Datos
+    participant PR as Impresora
 
-  Socio->>Sistema: Selecciona ítems
-  Sistema->>DB: Verifica disponibilidad y saldo
-  Sistema--)Sistema: Genera ticket
-  Sistema->>Socio: Muestra ticket
-  Sistema->>DB: Actualiza alquiler y saldo
+    S->>+K: Iniciar sesión con tarjeta
+    K->>+API: Validar credenciales
+    API->>+US: Autenticar socio
+    US->>+DB: Verificar datos
+    DB-->>-US: Datos válidos
+    US-->>-API: Usuario autenticado
+    API-->>-K: Sesión iniciada
+    
+    S->>+K: Consultar catálogo
+    K->>+API: Obtener contenido disponible
+    API->>+CS: Listar contenido
+    CS->>+DB: Consultar inventario
+    DB-->>-CS: Lista de contenido
+    CS-->>-API: Catálogo disponible
+    API-->>-K: Mostrar opciones
+    
+    S->>+K: Seleccionar películas/videojuegos
+    K->>+API: Validar selección
+    API->>+CS: Verificar disponibilidad
+    CS->>+DB: Comprobar stock
+    DB-->>-CS: Stock disponible
+    CS-->>-API: Confirmación disponibilidad
+    
+    API->>+US: Verificar saldo socio
+    US->>+DB: Consultar saldo
+    DB-->>-US: Saldo actual
+    US-->>-API: Saldo suficiente
+    
+    API->>+RS: Crear alquiler
+    RS->>+DB: Registrar alquiler
+    DB-->>-RS: Alquiler creado
+    
+    RS->>+PS: Procesar pago
+    PS->>+US: Debitar saldo
+    US->>+DB: Actualizar saldo
+    DB-->>-US: Saldo actualizado
+    US-->>-PS: Pago procesado
+    PS-->>-RS: Confirmación pago
+    
+    RS->>+CS: Actualizar inventario
+    CS->>+DB: Reducir stock disponible
+    DB-->>-CS: Stock actualizado
+    CS-->>-RS: Inventario actualizado
+    
+    RS-->>-API: Alquiler completado
+    API-->>-K: Confirmar transacción
+    
+    K->>+PR: Generar ticket
+    PR-->>-K: Ticket impreso
+    K-->>-S: Entregar ticket y contenido
