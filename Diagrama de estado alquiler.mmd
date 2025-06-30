@@ -1,0 +1,32 @@
+stateDiagram-v2
+    [*] --> Iniciado: Socio selecciona contenido
+    
+    Iniciado --> Validando: Verificar disponibilidad y saldo
+    
+    Validando --> Rechazado: Saldo insuficiente o no disponible
+    Validando --> Confirmado: Validación exitosa
+    
+    Confirmado --> Activo: Pago procesado y contenido entregado
+    
+    Activo --> Devuelto: Devolución en tiempo
+    Activo --> Vencido: Fecha límite superada
+    
+    Vencido --> Devuelto: Devolución tardía (con penalización)
+    Vencido --> Perdido: Contenido no devuelto (30 días)
+    
+    Devuelto --> Completado: Proceso finalizado
+    Perdido --> Completado: Penalización aplicada
+    Rechazado --> [*]
+    Completado --> [*]
+    
+    note right of Validando
+        Verificaciones:
+        - Stock disponible
+        - Saldo suficiente
+        - Socio activo
+    end note
+    
+    note right of Vencido
+        Se aplican penalizaciones
+        por devolución tardía
+    end note
