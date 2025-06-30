@@ -1,0 +1,8 @@
+flowchart LR
+  FE_REG[Frontend Registro]
+  REG_CTRL[RegistroController]
+  REG_SVC[ServicioRegistro]
+  USER_REPO[UserRepository]
+  DB_USERS[(DB Usuarios)]
+
+  FE_REG --> REG_CTRL --> REG_SVC --> USER_REPO --> DB_USERS
