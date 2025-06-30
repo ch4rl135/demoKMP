@@ -1,0 +1,15 @@
+flowchart LR
+  FE[React Frontend]
+  API[API REST]
+  subgraph Servicios
+    US[UserService]
+    CT[CatalogService]
+    RS[RentalService]
+    RSV[ReservationService]
+    PS[PenaltyService]
+    RPT[ReportService]
+    PYS[PaymentService]
+  end
+  DB[(PostgreSQL Cluster)]
+
+  FE --> API --> Servicios --> DB
